@@ -62,7 +62,7 @@ var banner = {
  */
 
 // General
-var {gulp, src, dest, watch, series, parallel} = require('gulp');
+var {src, dest, watch, series, parallel} = require('gulp');
 var del = require('del');
 var flatmap = require('gulp-flatmap');
 var lazypipe = require('lazypipe');
@@ -71,11 +71,11 @@ var header = require('gulp-header');
 var package = require('./package.json');
 
 // Scripts
-var jshint = require('gulp-jshint');
-var stylish = require('jshint-stylish');
+var eslint = require('gulp-eslint');
 var concat = require('gulp-concat');
 var uglify = require('gulp-terser');
 var optimizejs = require('gulp-optimize-js');
+var babel = require('gulp-babel');
 
 // Styles
 var sass = require('gulp-sass');
@@ -113,6 +113,7 @@ var cleanDist = function (done) {
 // Repeated JavaScript tasks
 var jsTasks = lazypipe()
 	.pipe(header, banner.main, {package: package})
+	.pipe(babel, {presets: ['@babel/env']})
 	.pipe(optimizejs)
 	.pipe(dest, paths.scripts.output)
 	.pipe(rename, {suffix: '.min'})
@@ -175,8 +176,9 @@ var lintScripts = function (done) {
 
 	// Lint scripts
 	return src(paths.scripts.input)
-		.pipe(jshint())
-		.pipe(jshint.reporter('jshint-stylish'));
+		.pipe(eslint())
+		.pipe(eslint.format())
+		.pipe(eslint.failAfterError());
 
 };
 

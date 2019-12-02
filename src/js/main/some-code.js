@@ -1,4 +1,4 @@
-document.addEventListener('click', function (event) {
-	if (!event.target.matches('#click-me')) return;
-	alert('You clicked me!');
+document.addEventListener('click', (event) => {
+  if (!event.target.matches('#click-me')) return;
+  alert('You clicked me!');
 }, false);
